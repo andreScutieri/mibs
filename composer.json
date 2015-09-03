@@ -1,0 +1,16 @@
+{
+	"require": {
+		"slim/slim": "*",
+		"slim/pdo": "~1.7",
+		"twig/twig": "*",
+		"akrabat/rka-slim-session-middleware": "*",
+		"michelf/php-markdown": "*",
+		"samayo/bulletproof": "2.0.*",
+		"abeautifulsite/simpleimage": "2.*"
+	},
+	"autoload": {
+		"psr-4": {
+			"MIBS\\": "src/"
+		}
+	}
+}
