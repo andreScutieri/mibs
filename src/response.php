@@ -18,10 +18,16 @@ class Response {
 	private $rBumpedAt = null;
 	private $rFiles = null;
 	private $rFilehash = null;
+	private $rFileName = null;
+	private $rFileUrl = null;
+	private $rFileThumb = null;
+	private $rHuman = null;
 	private $rIP = null;
 	private $rSticky = null;
 	private $rLocked = null;
 	private $rSage = null;
+	
+	
 	
 	public function __construct($pdo, $tId) {
 		$this->pdo = $pdo;
@@ -36,6 +42,7 @@ class Response {
 	 */	
 	public function setContent(array($response_data)) {
 		
+		$this->rId = $response_data['id'];
 		$this->rName = $response_data['name'];
 		$this->rTrip = $response_data['trip'];
 		$this->rEmail = $response_data['email'];
@@ -53,4 +60,39 @@ class Response {
 		return $this;
 	}
 	
+	public function processContent() {
+		
+		if($this->rFiles != '' && !empty($this->rFiles)) {
+			
+			$fileInfo = json_decode($this->rFiles);
+			$rFileName = $fileInfo->{'name'}.'.'.$fileInfo->{'mime'};
+			$rFileThumb = SITE_URL.'/content/thumb/'.$tFileName;
+			$rFileUrl = SITE_URL.'/content/'.$tFileName;
+			$rHuman = '('.$fileInfo->{'human'}.', '.$fileInfo->{'width'}.'x'.$fileInfo->{'height'}.', '.$fileInfo->{'oriName'}.')';
+			
+		}
+		
+		return $this;
+	}
+	
+	public function getResponseArray() {
+		
+		return array('id' => $this->rId, 
+					 'name' => $this->rName,
+					 'trip' => $this->rTrip,
+					 'email' => $this->rEmail,
+					 'capcode' => $this->rCapcode,
+					 'body' => $this->rBody,
+					 'posted_at' => $this->rPostedAt,
+					 'bumped_at' => $this->rBumpedAt,
+					 'files' => $this->rFiles,
+					 'filename' => $this->rFileName,
+					 'fileurl' => $this->rFileUrl,
+					 'filethumb' => $this->rFileThumb,
+					 'human' => $this->rHuman,
+					 'ip' => $this->rIP,
+					 'sticky' => $this->rSticky,
+					 'locked' => $this->rLocked,
+					 'sage' => $this->rSage
+					);
 }
