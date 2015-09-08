@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>{{thread_data.op_post.subject}} - /{{board_info.board_uri}}/ - MIBS</title>
+	</head>
+	<body>
+	
+		<header>
+			<h1>/{{board_info.board_uri}}/ - {{board_info.board_title|raw}}</h1>
+			<h4>{{board_info.board_subtitle|raw}}</h4>
+		</header>
+		
+		<!-- form -->
+		
+		
+		<div id="op_post">
+		
+			{% if thread_data.op_post.files %}
+			
+				<div id="files" style="float: left;">
+				
+					<a href="{{thread_data.op_post.fileurl}}">
+						<img src="{{thread_data.op_post.filethumb}}" />
+					</a>
+
+				</div>
+		
+			{% endif %}
+				<div class="post_header">
+					<h4>{{thread_data.op_post.subject|raw}}</h4>
+					{% if thread_data.op_post.files %}<h6>{{thread_data.op_post.human}}</h6> {% endif %}
+					Postado por {{thread_data.op_post.name|raw}}{{thread_data.op_post.trip|raw}} - <time>{{thread_data.op_post.posted_at}}</time> - <a id="{{thread_data.op_post.id}}">No.</a> {{thread_data.op_post.id}}
+				</div>
+				<div class="post_body">
+					{{thread_data.op_post.body|raw}}
+				</div>
+		</div>
+		
+		<div style="clear:both;"></div>
+		<hr />
+		
+		{% for response in thread_data[1:] %}
+			
+			<div id="r{{response.id}}" style="margin-left: 50px">
+				{% if response.files %}
+					<div id="files" style="float:left;">
+					
+						<a href="{{response.fileurl}}">
+							<img src="{{response.filethumb}}" />
+						</a>
+					</div>
+				{% endif %}
+					
+				<div class="post_header">
+					<h4>{{response.subject|raw}}</h4>
+					{% if response.files %}<h6>{{response.human}}</h6> {% endif %}
+					Postado por {{response.name|raw}}{{response.trip|raw}} - <time>{{response.posted_at}}</time> - <a id="{{response.id}}">No.</a> {{response.id}}
+				</div>
+				<div class="post_body">
+					{{response.body|raw}}
+				</div>
+			</div>
+		<div style="clear:both;"></div>
+		<hr />
+		
+		{% endfor %}
+	
+	</body>
+</html>

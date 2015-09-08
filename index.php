@@ -15,6 +15,11 @@ $pwd = DB_PASS;
 
 $pdo = new \Slim\PDO\Database($dsn, $usr, $pwd);
 
+# Initiate the Twig Template Engine
+Twig_Autoloader::register();
+
+$loader = new Twig_Loader_Filesystem(TPL_PATH);
+$twig = new Twig_Environment($loader, ['cache' => false]);
 
 # ROUTES
 
@@ -27,12 +32,31 @@ $pdo = new \Slim\PDO\Database($dsn, $usr, $pwd);
  *  The user wants to go to a specific thread.
  *  @format www.example.com/boards/vg/thread/1
  */
-$app->get('/boards/:board/thread/:threadId', function($board, $threadId) use ($app, $pdo) {
-		
-	$thread = new \MIBS\Thread($app, $pdo, $board, $threadId);
-	$thread->getOriginalPost();
-	$thread->countResponses();
+$app->get('/boards/:board/thread/:threadId', function($board, $threadId) use ($app, $pdo, $twig) {
 	
+	$boardHandler = new \MIBS\Board($pdo, $board);
+	$board_exists = $boardHandler->fetchBoardData();
+	$board_data = $boardHandler->getBoardInfo();
+		
+	if($board_exists) {
+		
+		$thread = new \MIBS\Thread($app, $pdo, $board, $threadId);
+		if($thread->getOriginalPost()) {
+					
+			$data = $thread->getResponses()->getThreadArray();
+			
+			echo $twig->render('thread.html', ['board_info' => $board_data, 'thread_id' => $threadId, 'thread_data' => $data]);
+			
+		} else {
+			$app->notFound();
+		}	
+		
+	} else {
+		
+		$app->notFound();
+		
+	}
+
 });
 
 /**
@@ -57,9 +81,24 @@ $app->get('/boards/:board/:page', function($board, $page) use ($app) {
  *  The user wants to see the Board first page.
  *  @format www.example.com/board
  */
-$app->get('/boards/:board', function($board) use ($app) {
+$app->get('/boards/:board', function($board) use ($app, $pdo, $twig) {
+	$boardHandler = new \MIBS\Board($pdo, $board);
+	$board_exists = $boardHandler->fetchBoardData();
+	$board_data = $boardHandler->getBoardInfo();
+		
+	if($board_exists) {
+		$pageHandler = new \MIBS\Page($app, $pdo, $board, 1);
+		$threads_exist = $pageHandler->fetchThreads();
+		
+		$threads_data = $pageHandler->getThreads();
+		$pagination = $pageHandler->createPageSelector();
+		
+		echo $twig->render('page.html', ['board_data' => $board_data, 'threadsData' => $threads_data, 'pagination' => $pagination]);
+		
+	} else {
+		$app->notFound();
+	}
 	
-	# The Board First Page.
 	
 });
 
@@ -85,7 +124,10 @@ $app->get('/', function() use ($app) {
 
 # Error handler
 $app->error(function(\Exception $e) use($app) {
-	echo 'Erro 500.<br/>Mensagem: '.$e->getMessage(); # Error 500 - Message:
+	echo 'Erro 500.<br/>';
+	echo 'Mensagem: '.$e->getMessage();
+	echo 'Arquivo: '.$e->getFile();
+	echo 'Linha: '.$e->getLine();
 });
 
 # 404 Not Found handler

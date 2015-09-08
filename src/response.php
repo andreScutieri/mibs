@@ -13,11 +13,11 @@ class Response {
 	private $rTrip = null;
 	private $rEmail = null;
 	private $rCapcode = null;
+	private $rSubject = null;
 	private $rBody = null;
 	private $rPostedAt = null;
 	private $rBumpedAt = null;
 	private $rFiles = null;
-	private $rFilehash = null;
 	private $rFileName = null;
 	private $rFileUrl = null;
 	private $rFileThumb = null;
@@ -40,18 +40,18 @@ class Response {
 	 *  @param array $response_data
 	 *  @return self
 	 */	
-	public function setContent(array($response_data)) {
+	public function setContent($response_data) {
 		
 		$this->rId = $response_data['id'];
 		$this->rName = $response_data['name'];
 		$this->rTrip = $response_data['trip'];
 		$this->rEmail = $response_data['email'];
 		$this->rCapcode = $response_data['capcode'];
+		$this->rSubject = $response_data['subject'];
 		$this->rBody = $response_data['body'];
 		$this->rPostedAt = $response_data['posted_at'];
-		$this->rBumpedat = $response_data['bumped_at'];
+		$this->rBumpedAt = $response_data['bumped_at'];
 		$this->rFiles = $response_data['files'];
-		$this->rFilehash = $response_data['filehash'];
 		$this->rIP = $response_data['ip'];
 		$this->rSticky = $response_data['sticky'];
 		$this->rLocked = $response_data['locked'];
@@ -65,10 +65,10 @@ class Response {
 		if($this->rFiles != '' && !empty($this->rFiles)) {
 			
 			$fileInfo = json_decode($this->rFiles);
-			$rFileName = $fileInfo->{'name'}.'.'.$fileInfo->{'mime'};
-			$rFileThumb = SITE_URL.'/content/thumb/'.$tFileName;
-			$rFileUrl = SITE_URL.'/content/'.$tFileName;
-			$rHuman = '('.$fileInfo->{'human'}.', '.$fileInfo->{'width'}.'x'.$fileInfo->{'height'}.', '.$fileInfo->{'oriName'}.')';
+			$this->rFileName = $fileInfo->{'name'}.'.'.$fileInfo->{'mime'};
+			$this->rFileThumb = SITE_URL.'/content/thumb/'.$this->rFileName;
+			$this->rFileUrl = SITE_URL.'/content/'.$this->rFileName;
+			$this->rHuman = '('.$fileInfo->{'human'}.', '.$fileInfo->{'width'}.'x'.$fileInfo->{'height'}.', '.$fileInfo->{'oriName'}.')';
 			
 		}
 		
@@ -82,6 +82,7 @@ class Response {
 					 'trip' => $this->rTrip,
 					 'email' => $this->rEmail,
 					 'capcode' => $this->rCapcode,
+					 'subject' => $this->rSubject,
 					 'body' => $this->rBody,
 					 'posted_at' => $this->rPostedAt,
 					 'bumped_at' => $this->rBumpedAt,
@@ -95,4 +96,5 @@ class Response {
 					 'locked' => $this->rLocked,
 					 'sage' => $this->rSage
 					);
+	}
 }

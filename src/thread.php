@@ -15,11 +15,11 @@ class Thread {
 	private $tTrip = null;
 	private $tEmail = null;
 	private $tCapcode = null;
+	private $tSubject = null;
 	private $tBody = null;
 	private $tPostedAt = null;
 	private $tBumpedAt = null;
 	private $tFiles = null;
-	private $tFilehash = null;
 	private $tFileName = null;
 	private $tFileUrl = null;
 	private $tFileThumb = null;
@@ -63,9 +63,9 @@ class Thread {
 				$this->tName = $data['name'];
 				$this->tTrip = $data['trip'];
 				$this->tCapcode = $data['capcode'];
+				$this->tSubject = $data['subject'];
 				$this->tBody = $data['body'];
 				$this->tFiles = $data['files'];
-				$this->tFilehash = $data['filehash'];
 				$this->tIP = $data['ip'];
 				$this->tPostedAt = $data['posted_at'];
 				$this->tBumpedAt = $data['bumped_at'];
@@ -73,13 +73,14 @@ class Thread {
 				$this->tLocked = $data['locked'];
 				$this->tSage = $data['sage'];
 				
-				if(!($this->tFiles == '') && !empty($this->tFiles)) {
+				if($this->tFiles) {
 				
 					$fileInfo = json_decode($this->tFiles);
-					$tFileName = $fileInfo->{'name'}.'.'.$fileInfo->{'mime'};
-					$tFileThumb = SITE_URL.'/content/thumb/'.$tFileName;
-					$tFileUri = SITE_URL.'/content/'.$tFileName;
-					$tHuman = '('.$fileInfo->{'human'}.', '.$fileInfo->{'width'}.'x'.$fileInfo->{'height'}.', '.$fileInfo->{'oriName'}.')';
+					
+					$this->tFileName = $fileInfo->{'name'}.'.'.$fileInfo->{'mime'};
+					$this->tFileThumb = SITE_URL.'/content/thumb/'.$this->tFileName;
+					$this->tFileUrl = SITE_URL.'/content/'.$this->tFileName;
+					$this->tHuman = '('.$fileInfo->{'human'}.', '.$fileInfo->{'width'}.'x'.$fileInfo->{'height'}.', '.$fileInfo->{'oriName'}.')';
 					
 				}				
 				
@@ -101,7 +102,7 @@ class Thread {
 	 */
 	public function getResponses($limit = false) {
 		
-		if($limit){ $select = $this->pdo->select()->from('posts_'.$this->board)->where('thread', '=', $this->tId)->orderBy('posted_at', 'DESC')->limit(10); } else { $select = $this->pdo->select()->from('posts_'.$this->board)->where('thread', '=', $this->tId)->orderBy('posted_at', 'ASC'); }
+		if($limit){ $select = $this->pdo->select()->from('posts_'.$this->board)->where('thread', '=', $this->tId)->orderBy('posted_at', 'DESC')->limit(5); } else { $select = $this->pdo->select()->from('posts_'.$this->board)->where('thread', '=', $this->tId)->orderBy('posted_at', 'ASC'); }
 		
 		$stmt = $select->execute();
 		
@@ -123,7 +124,7 @@ class Thread {
 		return $this;
 		
 	}
-	
+		
 	/**
 	 *  Finds how many responses the original post has and
 	 *  sets the $tNumResponses field
@@ -150,12 +151,12 @@ class Thread {
 						 'name' => $this->tName,
 						 'email' => $this->tEmail,
 						 'capcode' => $this->tCapcode,
+						 'subject' => $this->tSubject,
 						 'body' => $this->tBody,
 						 'posted_at' => $this->tPostedAt,
 						 'bumped_at' => $this->tBumpedAt,
 						 'files' => $this->tFiles,
-						 'filehash' => $this->tFilehash,
-						 'filename' => $this->tFilename,
+						 'filename' => $this->tFileName,
 						 'fileurl' => $this->tFileUrl,
 						 'filethumb' => $this->tFileThumb,
 						 'human' => $this->tHuman,
@@ -165,7 +166,7 @@ class Thread {
 						 'sage' => $this->tSage
 						);
 			
-		if(!empty($this->tResponses)) {
+		if(!$this->tResponses) {
 			
 			return array('op_post' => $op_post);
 			

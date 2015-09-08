@@ -6,6 +6,8 @@
  
 class Board {
 	
+	private $pdo = null;
+	
 	private $bURI = null;
 	private $bName = null;
 	private $bSubtitle = null;
@@ -21,7 +23,24 @@ class Board {
 	 */
 	public function fetchBoardData() {
 		
+		$select = $this->pdo->select()->from('boards')->where('uri', '=', $this->bURI);
+		$stmt = $select->execute();
+		$data = $stmt->fetch();
+		
+		if($data) {
+			$board_exists = true;
+			$this->bName = $data['title'];
+			$this->bSubtitle = $data['subtitle'];
+		} else {
+			
+			$board_exists = false;
+		}
+				
 		return $board_exists;
+	}
+	
+	public function getBoardInfo() {
+		return array('board_uri' => $this->bURI, 'board_title' => $this->bName, 'board_sub' => $this->bSubtitle);
 	}
 
 }
