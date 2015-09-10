@@ -7,6 +7,7 @@
 		<title>/{{board_data.board_uri}}/ - {{board_data.board_title|raw}} - MIBS</title>
 		
 		<link href='/templates/css/bootstrap.min.css' rel="stylesheet">
+		<link href='/templates/css/megaboga.css' rel="stylesheet">
 		
 		<!-- HTML5 shiv and Respond.js for IE8 support of HTML5 elements and media queries -->
 		<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -16,6 +17,7 @@
 		<![endif]-->
 	</head>
 	<body>
+		<a id="top"></a>
 		<div class="container-fluid">
 			<div class="row">
 				<div class="col-md-12">
@@ -47,23 +49,125 @@
 					</form>
 				</div>
 				<div class="col-md-9">
-					<div class="thread">
-						<div class="thread-op-post">
-							<header>
-								T&iacute;tulo - por An&ocirc;nimo em 12:30
-							</header>
-							<main>
-								<div class="file">
+					{% if threadsData %}
+						{% for thread in threadsData %}
+							<div class="panel panel-info" id="t{{thread.op_post.id}}">
+								<div class="panel-heading">
+									<strong>{{thread.op_post.subject|raw}}</strong> por {% if thread.op_post.email %}<a href="mailto:{{thread.op_post.email}}">{% endif %}{{thread.op_post.name|raw}}{% if thread.op_post.email %}</a>{% endif %}<span style="color: green">{{ thread.op_post.trip }}</span>{{thread.op_post.capcode}} em <u>{{thread.op_post.posted_at}}</u> No. <a href="#">{{thread.op_post.id}}</a>
+									<div class="btn-group pull-right">
+										<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+											<span class="glyphicon glyphicon-pencil"></span> Mod. <span class="caret"></span>
+										</button>
+										<ul class="dropdown-menu">
+											<li><a href="#">Apagar Arquivo</a></li>
+											<li><a href="#">Apagar Thread</a></li>
+											<li><a href="#">Banir IP</a></li>
+											<li><a href="#">Apagar e Banir</a></li>
+										</ul>
+									</div>
+									<a class="btn btn-default btn-xs pull-right" href="//megaboga.lcl/boards/{{board_data.board_uri}}/thread/{{thread.op_post.id}}"><span class="glyphicon glyphicon-comment" title="Responder"></span></a>
+									<a class="btn btn-default btn-xs pull-right" href="//megaboga.lcl/report/{{board_data.board_uri}}/{{thread.op_post.id}}/{{thread.op_post.id}}" title="Reportar"><span class="glyphicon glyphicon-bullhorn"></span></a>
+									<a class="btn btn-default btn-xs pull-right" onclick='$("#t{{thread.op_post.id}} .panel-body").toggle();' title="Esconder Thread"><span class="glyphicon glyphicon-eye-close"></span></a>
+								</div> <!-- END PANEL HEADING -->
+								<div class="panel-body">
 								
-								</div>
-								Texto texto.
-							</main>
+									{% if thread.op_post.files %}
+										<div class="row">
+											<div class="col-md-12">
+												<h6>Arquivo: <a href="{{thread.op_post.fileurl}}">{{thread.op_post.filename}}</a> {{thread.op_post.human}}</h6>
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-md-3">
+												<img src="{{thread.op_post.filethumb}}" alt="Imagem" />
+											</div>
+											<div class="col-md-9">
+												{{thread.op_post.body|raw}}
+											</div>
+										</div>
+									{% else %}
+										<div class="row">
+											<div class="col-md-12">
+												{{thread.op_post.body|raw}}
+											</div>
+										</div>								
+									{% endif %}
+									
+									<div class="row"><div class="col-md-12">&nbsp;</div></div><!-- DIVIDER -->
+									
+									{% for response in thread[1:] %}
+									<!-- RESPONSE START -->
+									<div class="row">
+										<div class="col-md-12">
+											
+											<!-- RESPONSE PANEL -->
+											<div class="panel panel-default" id="r{{response.id}}">
+												<div class="panel-heading">
+													<strong>{{response.subject|raw}}</strong> por {% if response.email %}<a href="mailto:{{response.email}}">{% endif %}{{response.name|raw}}{% if response.email %}</a>{% endif %}<span style="color: green">{{ response.trip }}</span>{{response.capcode}} em <u>{{response.posted_at}}</u> No. <a href="#">{{response.id}}</a>
+													<div class="btn-group pull-right">
+														<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+															<span class="glyphicon glyphicon-pencil"></span> Mod. <span class="caret"></span>
+														</button>
+														<ul class="dropdown-menu">
+															<li><a href="#">Apagar Arquivo</a></li>
+															<li><a href="#">Apagar Thread</a></li>
+															<li><a href="#">Banir IP</a></li>
+															<li><a href="#">Apagar e Banir</a></li>
+														</ul>
+													</div>
+														<a class="btn btn-default btn-xs pull-right" href="//megaboga.lcl/report/{{board_data.board_uri}}/{{thread.op_post.id}}/{{response.id}}" title="Reportar"><span class="glyphicon glyphicon-bullhorn"></span></a>
+														<a class="btn btn-default btn-xs pull-right" onclick='$("#r{{response.id}} .panel-body").toggle();' title="Esconder Resposta"><span class="glyphicon glyphicon-eye-close"></span></a>
+												</div><!-- END RESPONSE PANEL HEADING -->
+												<div class="panel-body">
+													{% if response.files %}
+														<div class="row">
+															<div class="col-md-12">
+																<h6>Arquivo: <a href="{{response.fileurl}}">{{response.filename}}</a> {{response.human}}</h6>
+															</div>
+														</div>
+														<div class="row">
+															<div class="col-md-3">
+																<img src="{{response.filethumb}}" alt="Imagem" />
+															</div>
+															<div class="col-md-9">
+																{{response.body|raw}}
+															</div>
+														</div>
+													{% else %}
+														<div class="row">
+															<div class="col-md-12">
+																{{response.body|raw}}
+															</div>
+														</div>								
+													{% endif %}
+												</div><!-- END RESPONSE PANEL BODY -->
+											</div>
+											<!-- END RESPONSE PANEL -->
+											
+										</div>
+									</div>
+									<!-- RESPONSE END -->
+									{% endfor %}								
+								</div><!-- END PANEL BODY -->								
+							</div> <!-- END THREAD PANEL -->
+						{% endfor %}					
+					{% else %}
+						<div class="alert alert-warning" role="alert">
+							<span class="glyphicon glyphicon-thumbs-down"></span> N&atilde;o h&aacute; threads neste board ainda. Crie uma!
 						</div>
-						
-						
-					</div>
-				</div>				
+					{% endif %}
+				</div>
 			</div>
+			<div class="row">
+				<div class="col-md-12 text-center">
+					<span><a href="#top">Para o topo</a></span>
+					{{pagination|raw}}
+				</div>
+			</div>			
 		</div>
+		<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+		<!-- Include all compiled plugins (below), or include individual files as needed -->
+		<script src="/templates/js/bootstrap.min.js"></script>
 	</body>
 </html>

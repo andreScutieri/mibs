@@ -40,7 +40,7 @@ class Board {
 	}
 	
 	public function getBoardInfo() {
-		return array('board_uri' => $this->bURI, 'board_title' => $this->bName, 'board_sub' => $this->bSubtitle);
+		return array('board_uri' => $this->bURI, 'board_title' => $this->bName, 'board_subtitle' => $this->bSubtitle);
 	}
 
 }

@@ -79,10 +79,10 @@
 		
 		$num_pages = $this->countPages();
 		
-		$before = "<nav><ul class=\"pagination\">";
+		$before = "<nav><ul class=\"pagination\" \"pagination-lg\">";
 		$link_prev = null;
 		$link_next = null;
-		$after = "</ul></li>";
+		$after = "</ul></nav>";
 		$content = '';
 		
 		$counter = 1;

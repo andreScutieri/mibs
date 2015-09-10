@@ -1,72 +1,58 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-br">
 	<head>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<meta charset="utf-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<title>{{thread_data.op_post.subject}} - /{{board_info.board_uri}}/ - MIBS</title>
+		<title>/{{board_data.board_uri}}/ - {{board_data.board_title|raw}} - MIBS</title>
+		
+		<link href='/templates/css/bootstrap.min.css' rel="stylesheet">
+		<link href='/templates/css/megaboga.css' rel="stylesheet">
+		
+		<!-- HTML5 shiv and Respond.js for IE8 support of HTML5 elements and media queries -->
+		<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+		<!--[if lt IE 9]>
+		  <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+		  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+		<![endif]-->
 	</head>
 	<body>
-	
-		<header>
-			<h1>/{{board_info.board_uri}}/ - {{board_info.board_title|raw}}</h1>
-			<h4>{{board_info.board_subtitle|raw}}</h4>
-		</header>
-		
-		<!-- form -->
-		
-		
-		<div id="op_post">
-		
-			{% if thread_data.op_post.files %}
-			
-				<div id="files" style="float: left;">
-				
-					<a href="{{thread_data.op_post.fileurl}}">
-						<img src="{{thread_data.op_post.filethumb}}" />
-					</a>
-
-				</div>
-		
-			{% endif %}
-				<div class="post_header">
-					<h4>{{thread_data.op_post.subject|raw}}</h4>
-					{% if thread_data.op_post.files %}<h6>{{thread_data.op_post.human}}</h6> {% endif %}
-					Postado por {{thread_data.op_post.name|raw}}{{thread_data.op_post.trip|raw}} - <time>{{thread_data.op_post.posted_at}}</time> - <a id="{{thread_data.op_post.id}}">No.</a> {{thread_data.op_post.id}}
-				</div>
-				<div class="post_body">
-					{{thread_data.op_post.body|raw}}
-				</div>
-		</div>
-		
-		<div style="clear:both;"></div>
-		<hr />
-		
-		{% for response in thread_data[1:] %}
-			
-			<div id="r{{response.id}}" style="margin-left: 50px">
-				{% if response.files %}
-					<div id="files" style="float:left;">
-					
-						<a href="{{response.fileurl}}">
-							<img src="{{response.filethumb}}" />
-						</a>
-					</div>
-				{% endif %}
-					
-				<div class="post_header">
-					<h4>{{response.subject|raw}}</h4>
-					{% if response.files %}<h6>{{response.human}}</h6> {% endif %}
-					Postado por {{response.name|raw}}{{response.trip|raw}} - <time>{{response.posted_at}}</time> - <a id="{{response.id}}">No.</a> {{response.id}}
-				</div>
-				<div class="post_body">
-					{{response.body|raw}}
+		<a id="top"></a>
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-md-12">
+					<h1>/{{board_data.board_uri}}/ - {{board_data.board_title|raw}}</h1>
+					<h4>{{board_data.board_subtitle|raw}}</h4>
 				</div>
 			</div>
-		<div style="clear:both;"></div>
-		<hr />
-		
-		{% endfor %}
-	
+			<div class="row">
+				<div class="col-md-3">
+					<form>
+						<div class="form-group">
+							<label for="name">Nome</label>
+							<input type="text" class="form-control" id="name" name="name" />
+						</div>
+						<div class="form-group">
+							<label for="email">E-mail</label>
+							<input type="email" class="form-control" id="email" name="email" />
+						</div>
+						<div class="form-group">
+							<label for="subject">Assunto</label>
+							<input type="text" class="form-control" id="subject" name="subject" />
+						</div>
+						<textarea class="form-control" rows="5"></textarea>
+						<div class="form-group">
+							<label for="file">Arquivo</label>
+							<input type="file" id="file" name="file" />
+						</div>
+						<button type="submit" class="btn btn-default">Nova Thread</button>
+					</form>
+				</div>
+				<div class="col-md-9">
+					
+
+				</div><!-- END THREAD CONTENT -->
+			</div><!-- END ROW -->
+		</div><!-- END GRID -->
 	</body>
 </html>

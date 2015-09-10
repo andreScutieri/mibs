@@ -149,6 +149,7 @@ class Thread {
 		
 		$op_post = array('id' => $this->tId,
 						 'name' => $this->tName,
+						 'trip' => $this->tTrip,
 						 'email' => $this->tEmail,
 						 'capcode' => $this->tCapcode,
 						 'subject' => $this->tSubject,
